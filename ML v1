@@ -34,8 +34,12 @@ y1 = na.omit(out)
 
 #x.norm = as.data.frame(lapply(x, normalize))
 
+k.entries = 500   #   k*5
+k.amount = 100    # k = 100
+
+
 set.seed(1)
-k.error = rep(0,105)
+k.error = rep(0,k.entries)
 z=1
 
 for (i in 1:5){
@@ -51,7 +55,7 @@ for (i in 1:5){
   test.y = y1[testRange, 17]
   
   # now run tests
-  for (p in 1:21){
+  for (p in 1:k.amount){
     result.pred = knn(train.x, test.x, cl = train.y$y, k = p)
     table(result.pred, test.y$y)
     err = mean(result.pred != test.y$y)
@@ -61,9 +65,15 @@ for (i in 1:5){
   }
 }
 ##########################################################
-avgk = rep(0, 21)
-for (i in 1:21){
-  avgk[i] = mean(k.error[i] + k.error[i+21] + k.error[i+42] + k.error[i+63] + k.error[i+84])
+avgk = rep(0, k.amount)
+for (i in 1:k.amount){
+  avgk[i] = ((k.error[i] + k.error[i+100] + k.error[i+200] + k.error[i+300] + k.error[i+400])/5)
 }
 
+# avgk = rep(0, k.amount)
+# for (i in 1:k.amount){
+#   avgk[i] = ((k.error[i] + k.error[i+21] + k.error[i+42] + k.error[i+63] + k.error[i+84])/5)
+# }
+
 print (paste0("The best K is ", which.min(avgk), " with value: ", min(avgk)))
+
