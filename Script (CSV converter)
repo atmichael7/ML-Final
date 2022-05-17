@@ -1,0 +1,234 @@
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+
+
+
+
+int main(){
+    // set input variable to file 
+    ifstream input("bank-full.csv");
+
+    // set output file
+    ofstream output;
+
+    // check if file can be openend 
+    if (!input.is_open()) cout << "Error opening file\n";
+
+    // "age";"job";"marital";"education";"default";"balance";"housing";"loan";
+    // "contact";"day";"month";"duration";"campaign";"pdays";"previous";"poutcome";"y"
+
+    // deFault is named in such a way as to not conflict with default keyword
+    string age, job, marital, education, deFault, balance, housing, loan,
+            contact, day, month, duration, campaign, pdays, previous, poutcome, y;
+
+
+    // write to output file
+    // output.open("name.csv");
+    // output << "Text n stuff \n";
+    // output.close();
+
+
+    output.open("out.csv");
+    // while not eof
+    while(input.good()){
+        // read line up to the prelimiter which is ; 
+        // for the last getline looking at y, it will be looking for \n for new line
+        getline(input, age, ';');
+        getline(input, job, ';');
+        getline(input, marital, ';');
+        getline(input, education, ';');
+        getline(input, deFault, ';');
+        getline(input, balance, ';');
+        getline(input, housing, ';');
+        getline(input, loan, ';');
+
+        getline(input, contact, ';');
+        getline(input, day, ';');
+        getline(input, month, ';');
+        getline(input, duration, ';');
+        getline(input, campaign, ';');
+        getline(input, pdays, ';');
+        getline(input, previous, ';');
+        getline(input, poutcome, ';');
+        getline(input, y, '\n');
+
+        /* now that values have been taken from the input file and stored into variables
+        can go through each that needs to be changed into numbers 
+
+        "age";"job";"marital";"education";"default";"balance";"housing";"loan";"contact";"day";"month";"duration";"campaign";"pdays";"previous";"poutcome";"y"
+        30;"unemployed";"married";"primary";"no";1787;              "no";"no";"cellular";19;"oct";             79;     1;       -1;        0;    "unknown";"no"
+
+        Need to numerize:
+        job
+        marital
+        education
+        deFault
+        housing
+        loan
+        contact
+        month
+        poutcome
+        y
+
+        */
+
+        
+
+        // copy over the age since its already a number
+        output << age << ",";
+
+        // algorithm to numerize job from string to number 
+        /*  0 - unknown
+            1 - admin
+            2 - blue-collar
+            3 - entrepreneur
+            4 - housemaid
+            5 - management
+            6 - retired
+            7 - self-employed
+            8 - services
+            9 - student
+            10- technician
+            11- unemployed
+        */
+        if (job == "admin.") output << "1,";
+        if (job == "blue-collar") output << "2,";
+        if (job == "entrepreneur") output << "3,";
+        if (job == "housemaid") output << "4,";
+        if (job == "management") output << "5,";
+        if (job == "retired") output << "6,";
+        if (job == "self-employed") output << "7,";
+        if (job == "services") output << "8,";
+        if (job == "student") output << "9,";
+        if (job == "technician") output << "10,";
+        if (job == "unemployed") output << "11,";
+        if (job == "unknown") output << "0,";
+
+        // algorithm to numerize marital status
+        /*  0 - unknown
+            1 - divorced
+            2 - married
+            3 - single
+        */
+        if (marital == "unknown") output << "0,";
+        if (marital == "divorced") output << "1,";
+        if (marital == "married") output << "2,";
+        if (marital == "single") output << "3,";
+
+        // algorithm to numerize education
+        /*  0 - unknown
+            1 - primary
+            2 - secondary
+            3 - tertiary
+        */
+        if (education == "unknown") output << "0,";
+        if (education == "primary") output << "1,";
+        if (education == "secondary") output << "2,";
+        if (education == "tertiary") output << "3,";
+
+        // algorithm to numerize default
+        /*  0 - unknown
+            1 - no
+            2 - yes
+        */
+        if (deFault == "unknown") output << "0,";
+        if (deFault == "no") output << "1,";
+        if (deFault == "yes") output << "2,";
+
+        // balance is already a numerical value so copy it over
+        output << balance << ",";
+
+        // algorithm to numerize housing status
+        /*  0 - unknown
+            1 - no
+            2 - yes
+        */
+        if (housing == "unknown") output << "0,";
+        if (housing == "no") output << "1,";
+        if (housing == "yes") output << "2,";
+
+        // algorithm to numerize loan status
+        /*  0 - unknown
+            1 - no
+            2 - yes
+        */
+        if (loan == "unknown") output << "0,";
+        if (loan == "no") output << "1,";
+        if (loan == "yes") output << "2,";
+
+        // algorithm to numerize housing contact method
+        /*  0 - unknown
+            1 - telephone
+            2 - cellular
+        */
+        if (contact == "unknown") output << "0,";
+        if (contact == "telephone") output << "1,";
+        if (contact == "cellular") output << "2,";
+
+        // day is already a number so copy it over
+        output << day << ",";
+
+        // algorithm to numerize month
+        /*  0 - unknown
+            1 - jan 
+            2 - feb
+            3 - mar
+            4 - apr
+            5 - may
+            6 - jun
+            7 - jul
+            8 - aug
+            9 - sep
+            10- oct
+            11- nov
+            12- dec
+        */
+        if (month == "unknown") output << "0,";
+        if (month == "jan") output << "1,";
+        if (month == "feb") output << "2,";
+        if (month == "mar") output << "3,";
+        if (month == "apr") output << "4,";
+        if (month == "may") output << "5,";
+        if (month == "jun") output << "6,";
+        if (month == "jul") output << "7,";
+        if (month == "aug") output << "8,";
+        if (month == "sep") output << "9,";
+        if (month == "oct") output << "10,";
+        if (month == "nov") output << "11,";
+        if (month == "dec") output << "12,";
+
+    //"duration";"campaign";"pdays";"previous"
+
+        // copy over duration, campaign, pdays, and previous
+        output << duration << ",";
+        output << campaign << ",";
+        output << pdays << ",";
+        output << previous << ",";
+
+    // algorithm to numerize poutcome
+        /*  0 - unknown
+            1 - failure
+            2 - success
+        */
+        if (poutcome == "unknown") output << "0,";
+        if (poutcome == "failure") output << "1,";
+        if (poutcome == "success") output << "2,";
+
+    // algorithm to numerize y
+        /*  0 - unknown
+            1 - no
+            2 - yes
+        */
+        if (y == "no") output << "0\n";
+        if (y == "yes") output << "1\n";
+
+
+        
+
+
+    }
+    output.close();
+    
+}
