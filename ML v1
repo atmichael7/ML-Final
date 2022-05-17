@@ -1,0 +1,114 @@
+setwd("C:\Users\vival\Desktop\Machine Learning")# sets my directory to my work directory. 
+library(ISLR2)
+memory.limit(size = 100000)
+
+download.file("https://archive.ics.uci.edu/ml/machine-learning-databases/00222/bank.zip", "bank.zip") # link/filename, filename
+download.file("https://archive.ics.uci.edu/ml/machine-learning-databases/00222/bank-additional.zip", "bank-additional.zip")
+unzip("bank.zip", exdir = "bank")
+unzip("bank-additional.zip", exdir = "bank")
+
+
+#bank_ds <- read.csv("bank/bank-full.csv", header = TRUE, sep = ";")
+
+bank_ds <- read.csv("bank/bank-full.csv", header = TRUE, sep = ";", stringsAsFactors= TRUE)
+bank_ds_small <- read.csv("bank/bank.csv", header = TRUE, sep = ";", stringsAsFactors= TRUE)
+
+###################################################################
+bank_ds_factor <- bank_ds
+
+
+#basic information
+dim(bank_ds_factor)
+names(bank_ds_factor)
+###################################################################
+
+
+
+###################################################################
+#normalizing data #code by TA
+#bank_ds <- read.csv("bank/bank-full.csv", header = TRUE, sep = ";", stringsAsFactors = TRUE)
+
+normalize <- function(x) {
+  return ((x - min(x)) / (max(x) - min(x)))
+}
+
+for (i in seq(1, ncol(bank_ds))) {
+  if (is.integer(bank_ds[,i]) == TRUE) {
+    bank_ds[,i] <- normalize(bank_ds[,i])
+  }
+}
+
+###################################################################
+
+#loop to create plots of normalized data 
+i = 1 
+
+for(x in bank_ds)
+{
+  plot(x, ylab = names(bank_ds[i] ))
+  i= i + 1
+}
+
+###################################################################
+# mikes code for getting p values 
+train = 1:10000
+glm.fits <- glm(
+  y ~ age+job+marital+education+default+balance+housing+loan+contact+day+month+duration+campaign+pdays+previous+poutcome,
+  data = bank_ds_factor, family = binomial
+)
+summary(glm.fits)
+#####################################
+# mikes code 
+library(class)
+
+normalize <- function(x){
+  return((x-min(x))/(max(x)-min(x)))
+}
+
+#x = out[2:8]
+#x = na.omit(x)
+
+x = na.omit(out)
+x = x[2:8]
+y1 = na.omit(out)
+
+x.norm = as.data.frame(lapply(x, normalize))
+
+set.seed(1)
+k.error = rep(0,105)
+z=1
+
+for (i in 1:5){
+  # 45212 - 1842 = 43368
+  max.test = ceiling((43371/5) * i)
+  min.test = ceiling(((43371/5) * i) - 8673)
+  
+  testRange = min.test:max.test
+  
+  train.x = x[-testRange, ]
+  test.x = x[testRange, ]
+  
+  train.y = y1[-testRange, 17]
+  test.y = y1[testRange, 17]
+  
+  # now run tests
+  for (p in 1:21){
+    result.pred = knn(train.x,
+                    test.x,
+                    cl = train.y$y,
+                    k = p)
+    table(result.pred, test.y$y)
+    err = mean(result.pred != test.y$y)
+    k.error[z] = err
+    print (paste0("Results for ", i, " (Test range = ", min.test, "-", max.test, ")(K=", p , "): " , err))
+    z=z+1
+  }
+}
+
+
+avgk = rep(0, 21)
+for (i in 1:21){
+  avgk[i] = mean(k.error[i] + k.error[i+21] + k.error[i+42] + k.error[i+63] + k.error[i+84])
+}
+
+print (paste0("The best K is ", which.min(avgk), " with value: ", min(avgk)))
